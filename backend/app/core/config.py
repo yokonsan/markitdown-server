@@ -32,3 +32,9 @@ CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = ["*"]
 CORS_ALLOW_HEADERS = ["*"]
+
+# API认证配置
+API_SECRET_KEY = os.getenv("API_SECRET_KEY", "your-secret-key-change-this-in-production")
+API_AUTH_ENABLED = os.getenv("API_AUTH_ENABLED", "true").lower() == "true"
+API_AUTH_HEADER = "X-API-Signature"
+API_TIMESTAMP_HEADER = "X-API-Timestamp"

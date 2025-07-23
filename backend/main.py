@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
@@ -18,6 +19,7 @@ from app.core.config import (
     MINIO_ENDPOINT,
     REDIS_URL
 )
+from app.core.auth import api_auth_middleware
 from app.api.v1.md_conv.async_routes import router as async_router
 
 
@@ -58,6 +60,24 @@ app.add_middleware(
     allow_methods=CORS_ALLOW_METHODS,
     allow_headers=CORS_ALLOW_HEADERS,
 )
+
+# API认证中间件
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    """API认证中间件"""
+    if request.method in ["POST", "PUT", "PATCH", "DELETE", "GET"]:
+        try:
+            await api_auth_middleware(request)
+        except HTTPException as e:
+            # 直接返回认证错误，不进入后续处理
+            from fastapi.responses import JSONResponse
+            return JSONResponse(
+                status_code=e.status_code,
+                content={"detail": e.detail}
+            )
+    
+    response = await call_next(request)
+    return response
 
 # 注册路由
 # app.include_router(md_conv_router, prefix="/api/v1")

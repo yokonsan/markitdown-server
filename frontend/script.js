@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- API Configuration ---
     const API_BASE_URL = 'http://127.0.0.1:8000/api/v1/async'; // 根据实际后端地址调整
+    const API_SECRET_KEY = 'your-secret-key-change-this-in-production'; // 应与后端配置的密钥一致
 
     // --- Translations ---
     const translations = {
@@ -80,14 +81,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- API Authentication ---
+    const generateSignature = (method, path, body = '') => {
+        const timestamp = Math.floor(Date.now() / 1000);
+        const stringToSign = `${method.toUpperCase()}:${path}:${timestamp}:${body}`;
+        
+        // 使用Web Crypto API进行HMAC-SHA256签名
+        const encoder = new TextEncoder();
+        const data = encoder.encode(stringToSign);
+        const key = encoder.encode(API_SECRET_KEY);
+        
+        // 使用SubtleCrypto进行HMAC计算
+        return crypto.subtle.importKey(
+            'raw',
+            key,
+            { name: 'HMAC', hash: 'SHA-256' },
+            false,
+            ['sign']
+        ).then(cryptoKey => {
+            return crypto.subtle.sign('HMAC', cryptoKey, data);
+        }).then(signature => {
+            // 转换为十六进制字符串
+            const signatureArray = new Uint8Array(signature);
+            const signatureHex = Array.from(signatureArray)
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+            return { signature: signatureHex, timestamp };
+        });
+    };
+
+    const makeAuthenticatedRequest = async (url, options = {}) => {
+        const method = options.method || 'GET';
+        const body = options.body || '';
+        const path = new URL(url).pathname;
+        
+        // 生成签名
+        const { signature, timestamp } = await generateSignature(method, path, body);
+        
+        // 添加认证头
+        const headers = {
+            ...options.headers,
+            'X-API-Signature': signature,
+            'X-API-Timestamp': timestamp.toString()
+        };
+        
+        return fetch(url, {
+            ...options,
+            headers
+        });
+    };
+
     // --- API Functions ---
     const getUploadUrl = async (filename, contentType) => {
-        const response = await fetch(`${API_BASE_URL}/upload-url`, {
+        const body = JSON.stringify({ filename, content_type: contentType });
+        const response = await makeAuthenticatedRequest(`${API_BASE_URL}/upload-url`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ filename, content_type: contentType })
+            body: body
         });
         if (!response.ok) throw new Error('Failed to get upload URL');
         return response.json();
@@ -106,29 +158,30 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const createConversionTask = async (objectName, originalFilename, extractImages = false) => {
-        const response = await fetch(`${API_BASE_URL}/create-task`, {
+        const body = JSON.stringify({
+            object_name: objectName,
+            original_filename: originalFilename,
+            extract_images: extractImages
+        });
+        const response = await makeAuthenticatedRequest(`${API_BASE_URL}/create-task`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                object_name: objectName,
-                original_filename: originalFilename,
-                extract_images: extractImages
-            })
+            body: body
         });
         if (!response.ok) throw new Error('Failed to create conversion task');
         return response.json();
     };
 
     const getTaskStatus = async (taskId) => {
-        const response = await fetch(`${API_BASE_URL}/task/${taskId}`);
+        const response = await makeAuthenticatedRequest(`${API_BASE_URL}/task/${taskId}`);
         if (!response.ok) throw new Error('Failed to get task status');
         return response.json();
     };
 
     const getDownloadUrl = async (taskId) => {
-        const response = await fetch(`${API_BASE_URL}/download/${taskId}`);
+        const response = await makeAuthenticatedRequest(`${API_BASE_URL}/download/${taskId}`);
         if (!response.ok) throw new Error('Failed to get download URL');
         return response.json();
     };
