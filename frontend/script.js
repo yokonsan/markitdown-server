@@ -225,6 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
             await uploadToMinIO(upload_url, file);
             updateDropZoneState('processing', file.name, 0);
             
+            // 等待1秒确保MinIO处理完成
+            console.log('⏳ 等待MinIO处理文件...');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
             // Step 3: Create conversion task
             const taskResponse = await createConversionTask(object_name, file.name, extractImages);
             currentTaskId = taskResponse.task_id;
