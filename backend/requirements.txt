@@ -1,5 +1,5 @@
 # MarkItDown 转换功能依赖
-markitdown[pdf, docx, pptx, xlsx, xls, outlook, ]>=0.0.1a2
+markitdown[pdf, docx, pptx, xlsx, xls, epub, zip, html]>=0.0.1a2
 
 # FastAPI 相关
 fastapi>=0.104.0

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let pollingInterval = null;
 
     // --- API Configuration ---
-    const API_BASE_URL = 'http://127.0.0.1:8000/api/v1/async'; // 根据实际后端地址调整
+    const API_BASE_URL = 'https://api.any2md.cc/api/v1/async'; // 根据实际后端地址调整
 
     // --- Translations ---
     const translations = {
