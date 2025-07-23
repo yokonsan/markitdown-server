@@ -54,8 +54,8 @@ async def create_conversion_task(request: CreateTaskRequest):
     """
     try:
         # 检查文件是否存在
-        if not minio_client.object_exists(request.object_name):
-            raise HTTPException(status_code=404, detail="文件不存在于对象存储")
+        # if not minio_client.object_exists(request.object_name):
+        #     raise HTTPException(status_code=404, detail="文件不存在于对象存储")
         
         # 提交Celery任务
         task_data = {
