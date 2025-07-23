@@ -1,0 +1,28 @@
+# MarkItDown 转换功能依赖
+markitdown[pdf, docx, pptx, xlsx, xls, outlook, ]>=0.0.1a2
+
+# FastAPI 相关
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6  # 文件上传支持
+
+# 工具库
+aiofiles>=23.2.1  # 异步文件操作
+loguru>=0.7.2     # 日志
+pydantic>=2.5.0   # 数据验证
+
+# MinIO 对象存储
+minio>=7.2.0
+
+# Celery 异步任务队列
+celery>=5.3.0
+redis>=5.0.0
+
+
+# 可选的AI服务依赖 (用于音频转录)
+# openai>=1.0.0    # OpenAI API
+# azure-cognitiveservices-speech  # Azure Speech
+
+# 图像处理增强 (可选)
+# opencv-python>=4.8.0
+# pillow>=10.0.0 

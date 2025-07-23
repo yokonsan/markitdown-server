@@ -1,0 +1,36 @@
+version: '3.8'
+
+# Development override configuration
+services:
+  api:
+    build:
+      target: development
+    volumes:
+      - .:/app
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+    ports:
+      - "8000:8000"
+      - "5678:5678"  # Debug port
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app
+
+  celery-worker:
+    build:
+      target: development
+    volumes:
+      - .:/app
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+    command: celery -A app.core.worker worker --loglevel=debug --concurrency=1
+
+  celery-beat:
+    build:
+      target: development
+    volumes:
+      - .:/app
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+    command: celery -A app.core.worker beat --loglevel=debug

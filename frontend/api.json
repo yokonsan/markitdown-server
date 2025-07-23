@@ -1,0 +1,555 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Markdown转换服务",
+    "description": "基于FastAPI和MarkItDown的文件转换服务，支持异步处理",
+    "version": "2.0.0"
+  },
+  "paths": {
+    "/api/v1/async/upload-url": {
+      "post": {
+        "tags": [
+          "异步转换"
+        ],
+        "summary": "获取文件上传预签名URL",
+        "description": "获取用于直接上传到MinIO的预签名URL，前端可以直接上传到对象存储",
+        "operationId": "get_upload_url_api_v1_async_upload_url_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadUrlRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadUrlResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/async/create-task": {
+      "post": {
+        "tags": [
+          "异步转换"
+        ],
+        "summary": "创建转换任务",
+        "description": "上传文件到MinIO后，创建异步转换任务",
+        "operationId": "create_conversion_task_api_v1_async_create_task_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Create Conversion Task Api V1 Async Create Task Post"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/async/task/{task_id}": {
+      "get": {
+        "tags": [
+          "异步转换"
+        ],
+        "summary": "查询任务状态",
+        "description": "根据任务ID查询转换任务的详细状态和进度",
+        "operationId": "get_task_status_api_v1_async_task__task_id__get",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Task Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "异步转换"
+        ],
+        "summary": "删除任务",
+        "description": "删除转换任务及其相关文件",
+        "operationId": "delete_task_api_v1_async_task__task_id__delete",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Task Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/async/download/{task_id}": {
+      "get": {
+        "tags": [
+          "异步转换"
+        ],
+        "summary": "获取结果下载链接",
+        "description": "获取转换结果的下载链接",
+        "operationId": "get_download_url_api_v1_async_download__task_id__get",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Task Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DownloadResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/async/health": {
+      "get": {
+        "tags": [
+          "异步转换"
+        ],
+        "summary": "异步服务健康检查",
+        "description": "检查异步转换服务是否正常运行",
+        "operationId": "health_check_api_v1_async_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateTaskRequest": {
+        "properties": {
+          "object_name": {
+            "type": "string",
+            "title": "Object Name",
+            "description": "MinIO中的对象名"
+          },
+          "original_filename": {
+            "type": "string",
+            "title": "Original Filename",
+            "description": "原始文件名"
+          },
+          "extract_images": {
+            "type": "boolean",
+            "title": "Extract Images",
+            "description": "是否提取图像内容",
+            "default": false
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "用户ID"
+          }
+        },
+        "type": "object",
+        "required": [
+          "object_name",
+          "original_filename"
+        ],
+        "title": "CreateTaskRequest",
+        "description": "创建转换任务请求模型"
+      },
+      "DownloadResponse": {
+        "properties": {
+          "download_url": {
+            "type": "string",
+            "title": "Download Url",
+            "description": "下载链接"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "文件名"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In",
+            "description": "过期时间（秒）"
+          }
+        },
+        "type": "object",
+        "required": [
+          "download_url",
+          "filename",
+          "expires_in"
+        ],
+        "title": "DownloadResponse",
+        "description": "下载响应模型"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "TaskResponse": {
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "title": "Task Id",
+            "description": "任务ID"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "任务状态"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result",
+            "description": "任务结果数据"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error",
+            "description": "错误信息"
+          },
+          "filename": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Filename",
+            "description": "原始文件名"
+          },
+          "progress": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Progress",
+            "description": "进度百分比"
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_id",
+          "status"
+        ],
+        "title": "TaskResponse",
+        "description": "任务响应模型"
+      },
+      "UploadUrlRequest": {
+        "properties": {
+          "filename": {
+            "type": "string",
+            "title": "Filename",
+            "description": "文件名"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Type",
+            "description": "文件MIME类型"
+          }
+        },
+        "type": "object",
+        "required": [
+          "filename"
+        ],
+        "title": "UploadUrlRequest",
+        "description": "获取上传链接请求模型"
+      },
+      "UploadUrlResponse": {
+        "properties": {
+          "upload_url": {
+            "type": "string",
+            "title": "Upload Url",
+            "description": "预签名上传URL"
+          },
+          "object_name": {
+            "type": "string",
+            "title": "Object Name",
+            "description": "MinIO中的对象名"
+          },
+          "file_id": {
+            "type": "string",
+            "title": "File Id",
+            "description": "文件ID"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In",
+            "description": "URL过期时间（秒）"
+          }
+        },
+        "type": "object",
+        "required": [
+          "upload_url",
+          "object_name",
+          "file_id",
+          "expires_in"
+        ],
+        "title": "UploadUrlResponse",
+        "description": "上传链接响应模型"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Markdown转换",
+      "description": "同步转换接口"
+    },
+    {
+      "name": "异步转换",
+      "description": "基于MinIO和Celery的异步转换接口"
+    }
+  ]
+}

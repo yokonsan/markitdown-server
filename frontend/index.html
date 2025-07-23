@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Converter</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 data-lang-key="title">Markdown Converter</h1>
+            <p data-lang-key="subtitle">Supports converting multiple file formats to Markdown documents for easy AI reading and understanding</p>
+        </header>
+
+        <div class="lang-switcher">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="zh">ZH</button>
+        </div>
+
+        <main class="main-content">
+            <div class="card left-panel">
+                <div class="file-drop-zone" id="file-drop-zone">
+                    <div class="upload-icon-container">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <p class="drop-zone-text">
+                        <span data-lang-key="dropZoneText1">Drag & drop files here or </span>
+                        <span class="upload-link" data-lang-key="dropZoneText2">click to select</span>
+                    </p>
+                    <p class="drop-zone-hint" data-lang-key="maxFileSize">Maximum file size: 5MB</p>
+                    <div class="upload-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="extract-images-checkbox">
+                            <span data-lang-key="extractImages">Extract images from document</span>
+                        </label>
+                    </div>
+                    <input type="file" id="file-input" hidden>
+                </div>
+
+                <div class="support-info-card">
+                    <div class="info-header">
+                        <i class="far fa-file-alt"></i>
+                        <span data-lang-key="formatsAndUsage">Formats & Usage</span>
+                    </div>
+                    <div class="formats-grid">
+                        <span class="format-tag"><i class="far fa-file-pdf"></i> .pdf</span>
+                        <span class="format-tag"><i class="far fa-file-word"></i> .docx, .doc</span>
+                        <span class="format-tag"><i class="far fa-file-powerpoint"></i> .pptx, .ppt</span>
+                        <span class="format-tag"><i class="far fa-file-excel"></i> .xlsx, .xls</span>
+                        <span class="format-tag"><i class="far fa-file-code"></i> .html, .htm</span>
+                        <span class="format-tag"><i class="fas fa-file-csv"></i> .csv</span>
+                        <span class="format-tag"><i class="fas fa-book-open"></i> .epub</span>
+                        <span class="format-tag"><i class="far fa-file-archive"></i> .zip</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card right-panel" id="output-panel">
+                <div class="placeholder-content" id="placeholder-content">
+                     <div class="output-icon-container">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <h2 data-lang-key="outputPlaceholderTitle">Output Area</h2>
+                    <p data-lang-key="outputPlaceholderText">Upload a supported file from the left panel. The system will automatically convert it to Markdown, and the result will be displayed here.</p>
+                    <div class="output-actions-placeholder">
+                        <button class="action-btn-placeholder" disabled><i class="far fa-eye"></i> <span data-lang-key="previewButton">Preview Content</span></button>
+                        <button class="action-btn-placeholder" disabled><i class="fas fa-download"></i> <span data-lang-key="downloadButton">Download File</span></button>
+                    </div>
+                </div>
+                <div class="output-content hidden" id="output-content">
+                    <div class="output-header">
+                        <h3 data-lang-key="outputHeader">Conversion Result</h3>
+                        <div class="output-actions">
+                            <button id="preview-btn" class="action-btn"><i class="far fa-eye"></i> <span data-lang-key="previewButton2">Preview Content</span></button>
+                            <button id="download-btn" class="action-btn"><i class="fas fa-download"></i> <span data-lang-key="downloadButton2">Download File</span></button>
+                        </div>
+                    </div>
+                    <div class="markdown-container">
+                        <div class="markdown-header">
+                            <div class="file-type">
+                                <i class="fab fa-markdown"></i>
+                                <span>Markdown</span>
+                            </div>
+                            <div class="file-size" id="file-size">0 characters</div>
+                        </div>
+                        <textarea id="markdown-output" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="preview-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-lang-key="modalTitle">Content Preview</h3>
+                <button id="close-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <div id="preview-container" class="markdown-body"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
