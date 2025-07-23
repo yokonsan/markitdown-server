@@ -1,5 +1,5 @@
 from celery import Celery
-from backend.app.core.config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
+from app.core.config import CELERY_BROKER_URL, CELERY_RESULT_BACKEND
 
 celery_app = Celery(
     'markdown_converter',

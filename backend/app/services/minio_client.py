@@ -8,7 +8,7 @@ from minio import Minio
 from minio.error import S3Error
 from loguru import logger
 
-from backend.app.core.config import (
+from app.core.config import (
     MINIO_ENDPOINT,
     MINIO_ACCESS_KEY,
     MINIO_SECRET_KEY,

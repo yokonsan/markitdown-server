@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
 
-from backend.app.core.config import (
+from app.core.config import (
     APP_NAME,
     DEBUG,
     HOST,
@@ -18,7 +18,7 @@ from backend.app.core.config import (
     MINIO_ENDPOINT,
     REDIS_URL
 )
-from backend.app.api.v1.md_conv.async_routes import router as async_router
+from app.api.v1.md_conv.async_routes import router as async_router
 
 
 @asynccontextmanager

@@ -2,9 +2,9 @@ from fastapi import APIRouter, HTTPException, BackgroundTasks
 from loguru import logger
 from celery.result import AsyncResult
 
-from backend.app.services.minio_client import minio_client
-from backend.app.schema.async_schemas import UploadUrlRequest, UploadUrlResponse, CreateTaskRequest, TaskResponse, DownloadResponse
-from backend.app.tasks.markdown_tasks import convert_file_to_markdown
+from app.services.minio_client import minio_client
+from app.schema.async_schemas import UploadUrlRequest, UploadUrlResponse, CreateTaskRequest, TaskResponse, DownloadResponse
+from app.tasks.markdown_tasks import convert_file_to_markdown
 
 router = APIRouter(
     prefix="/async",
@@ -236,7 +236,7 @@ async def health_check():
     """异步服务健康检查"""
     try:
         # 检查Celery连接
-        from backend.app.core.worker import celery_app
+        from app.core.worker import celery_app
         result = celery_app.control.inspect()
         
         return {

@@ -3,9 +3,9 @@ from datetime import datetime
 
 from loguru import logger
 
-from backend.app.core.worker import celery_app
-from backend.app.services.minio_client import minio_client
-from backend.app.api.v1.md_conv.conv import MarkdownConverter
+from app.core.worker import celery_app
+from app.services.minio_client import minio_client
+from app.api.v1.md_conv.conv import MarkdownConverter
 
 
 @celery_app.task(bind=True, max_retries=3)

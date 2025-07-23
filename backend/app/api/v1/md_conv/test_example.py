@@ -12,7 +12,7 @@ import requests
 import json
 from pathlib import Path
 
-BASE_URL = "http://localhost:8000/api/v1/md-convert"
+BASE_URL = "https://api.any2md.cc/api/v1/md-convert"
 
 
 def test_health_check():
