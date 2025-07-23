@@ -1,66 +1,36 @@
-# Multi-stage Dockerfile for backend API service
-FROM python:3.11-slim as base
+FROM python:3.10-slim-bookworm AS builder
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+WORKDIR /opt/app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    libc-dev \
-    libffi-dev \
-    libxml2-dev \
-    libxslt1-dev \
-    libjpeg-dev \
-    libpng-dev \
-    libfreetype6-dev \
-    libmagic1 \
-    poppler-utils \
-    tesseract-ocr \
-    tesseract-ocr-chi-sim \
-    tesseract-ocr-chi-tra \
-    pandoc \
-    curl \
+COPY requirements.txt ./
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc g++ libc-dev libffi-dev libssl-dev python3-dev \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user
-RUN groupadd -r appuser && useradd -r -g appuser appuser
-
-# Set work directory
-WORKDIR /app
-
-# Copy requirements first for better caching
-COPY requirements.txt .
-
-# Install Python dependencies
+# 创建并安装虚拟环境
+RUN python -m venv /venv
+ENV PATH="/venv/bin:$PATH"
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Development stage
-FROM base as development
-ENV ENVIRONMENT=development
-COPY . .
-RUN chown -R appuser:appuser /app
-USER appuser
-EXPOSE 8000
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
-# Production stage
-FROM base as production
-ENV ENVIRONMENT=production
-COPY . .
-RUN chown -R appuser:appuser /app
-USER appuser
-EXPOSE 8000
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+FROM python:3.10-slim-bookworm AS production
 
-# Celery worker stage
-FROM base as worker
-ENV ENVIRONMENT=production
+ENV TZ=UTC
+
+WORKDIR /opt/app
+
+COPY --from=builder /venv /venv
+ENV PATH="/venv/bin:$PATH"
+
 COPY . .
-RUN chown -R appuser:appuser /app
-USER appuser
-CMD ["celery", "-A", "app.core.worker", "worker", "--loglevel=info", "--concurrency=2"]
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# 设置提交SHA
+ARG COMMIT_SHA
+ENV COMMIT_SHA=${COMMIT_SHA}
+
+EXPOSE 8000

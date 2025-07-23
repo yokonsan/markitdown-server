@@ -1,0 +1,112 @@
+x-shared-env: &shared-api-worker-env
+  LOG_LEVEL: ${LOG_LEVEL:-INFO}
+  LOG_FILE: ${LOG_FILE:-/opt/any2md/logs/server.log}
+  LOG_FILE_MAX_SIZE: ${LOG_FILE_MAX_SIZE:-20}
+  LOG_FILE_BACKUP_COUNT: ${LOG_FILE_BACKUP_COUNT:-5}
+  LOG_DATEFORMAT: ${LOG_DATEFORMAT:-%Y-%m-%d %H:%M:%S}
+  LOG_TZ: ${LOG_TZ:-UTC}
+  CORS_ORIGINS: ${CORS_ORIGINS}
+  HOST: ${HOST}
+  PORT: ${PORT}
+  DEBUG: ${DEBUG}
+  # minio
+  MINIO_ENDPOINT: ${MINIO_ENDPOINT:-minio}
+  MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+  MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+  MINIO_SECURE: ${MINIO_SECURE}
+  MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME}
+  MINIO_PRESIGNED_EXPIRE_SECONDS: ${MINIO_PRESIGNED_EXPIRE_SECONDS}
+
+  # redis
+  REDIS_URL: ${REDIS_URL:-redis://redis/4}
+  CELERY_BROKER_URL: ${REDIS_URL:-redis://redis/4}
+  CELERY_RESULT_BACKEND: ${REDIS_URL:-redis://redis/4}
+
+services:
+  # API service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      # Use the shared environment variables.
+      <<: *shared-api-worker-env
+      # Startup mode, 'api' starts the API server.
+      MODE: api
+
+    depends_on:
+      - redis
+      - minio
+    volumes:
+      - ./volumes/data/:/opt/any2md/data
+    networks:
+      - any2md
+    ports:
+      - "8000:8000"
+
+  # worker service
+  # The Celery worker for processing the queue.
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      # Use the shared environment variables.
+      <<: *shared-api-worker-env
+      # Startup mode, 'worker' starts the Celery worker for processing the queue.
+      MODE: worker
+      CELERY_WORKER_AMOUNT: ${CELERY_WORKER_AMOUNT:-4}
+    depends_on:
+      - db
+      - redis
+      - elasticsearch
+      - minio
+    volumes:
+      # Mount the storage directory to the container, for storing user files.
+      - ./volumes/data:/opt/any2md/data
+    networks:
+      - any2md
+
+  # The redis cache.
+  redis:
+    image: library/redis:latest
+    container_name: redis
+    restart: always
+    volumes:
+      # Mount the redis data directory to the container.
+      - ./volumes/redis/data:/data
+    healthcheck:
+      test: [ 'CMD', 'redis-cli', 'ping' ]
+    ports:
+      - "6379:6379"
+    networks:
+      - any2md
+
+  minio:
+    container_name: minio
+    restart: always
+    image: minio/minio:RELEASE.2021-06-17T00-10-46Z
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+    volumes:
+      - ./volumes/minio:/minio_data
+    command: minio server /minio_data
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live' ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - any2md
+
+networks:
+  any2md:
+
+volumes:
+  any2md:
