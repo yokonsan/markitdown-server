@@ -34,3 +34,4 @@ ARG COMMIT_SHA
 ENV COMMIT_SHA=${COMMIT_SHA}
 
 EXPOSE 8000
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
