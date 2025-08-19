@@ -50,7 +50,29 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadFailed: "Upload failed",
             processingFailed: "Processing failed",
             retry: "Retry",
-            extractImages: "Extract images from document"
+            extractImages: "Extract images from document",
+            // 服务介绍翻译
+            introTitle: "MarkItDown-based Intelligent Document Conversion Service",
+            introSubtitle: "Professional multi-format document conversion solution, empowering content processing in the AI era",
+            feature1Title: "Smart Conversion",
+            feature1Desc: "Based on MarkItDown technology, accurately recognizes document structure while maintaining format integrity",
+            feature1Detail: "Intelligently identifies document structure elements like titles, paragraphs, lists, and tables, ensuring converted Markdown documents maintain original logical structure and hierarchical relationships, supporting complex formatting.",
+            feature2Title: "Async Processing",
+            feature2Desc: "Supports large file asynchronous processing, no waiting required, real-time conversion progress monitoring",
+            feature2Detail: "Utilizes advanced asynchronous processing architecture where large file uploads and conversions occur in the background, allowing users to continue browsing other content with real-time progress updates and immediate completion notifications.",
+            feature3Title: "Secure & Reliable",
+            feature3Desc: "Temporary storage with auto-deletion after 1 hour, zero privacy risk",
+            feature3Detail: "Uses MinIO object storage with HMAC signature authentication to ensure transmission security. All uploaded files are temporarily stored and automatically deleted after 1 hour, with no user data retention, ensuring zero privacy risk and complete security.",
+            feature4Title: "Multi-format Support",
+            feature4Desc: "Supports various mainstream formats including PDF, Office documents, HTML, CSV and more",
+            feature4Detail: "Covers various document formats in daily work including PDFs, Word/Excel/PowerPoint, web pages, data tables, etc., meeting conversion needs for different scenarios.",
+            benefitsTitle: "Why Choose Our Service?",
+            benefit1: "High-precision conversion maintaining original format",
+            benefit2: "Fast processing saving time",
+            benefit3: "Secure and reliable protecting privacy",
+            benefit4: "Free to use, no registration required",
+            ctaText: "Converted Markdown documents are perfectly optimized for AI reading, enabling AI to better understand your document content",
+            ctaDetail: "Whether for ChatGPT, Claude, or other AI models, converted Markdown documents provide the best reading experience, helping AI more accurately understand and process your document content."
         },
         zh: {
             title: "Markdown 转换工具",
@@ -77,7 +99,29 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadFailed: "上传失败",
             processingFailed: "处理失败",
             retry: "重试",
-            extractImages: "从文档中提取图片"
+            extractImages: "从文档中提取图片",
+            // 服务介绍翻译
+            introTitle: "基于 MarkItDown 的智能文档转换服务",
+            introSubtitle: "专业的多格式文档转换解决方案，助力 AI 时代的内容处理",
+            feature1Title: "智能转换",
+            feature1Desc: "基于 MarkItDown 技术，精准识别文档结构，保持格式完整性",
+            feature1Detail: "智能识别文档的标题、段落、列表、表格等结构元素，确保转换后的 Markdown 文档保持原始文档的逻辑结构和层次关系，支持复杂的排版格式。",
+            feature2Title: "异步处理",
+            feature2Desc: "支持大文件异步处理，无需等待，实时查看转换进度",
+            feature2Detail: "采用先进的异步处理架构，大文件上传和转换在后台进行，用户可以继续浏览其他内容，转换进度实时更新，完成后立即通知。",
+            feature3Title: "安全可靠",
+            feature3Desc: "采用 MinIO 对象存储，HMAC 签名认证，确保数据安全",
+            feature3Detail: "企业级的数据存储和传输安全，使用 HMAC 签名认证确保请求的真实性和完整性，所有文件都存储在私有云存储中，支持数据加密。",
+            feature4Title: "多格式支持",
+            feature4Desc: "支持 PDF、Office 文档、HTML、CSV 等多种主流格式",
+            feature4Detail: "覆盖日常工作中的各种文档格式，包括 PDF 文档、Word/Excel/PowerPoint、网页文件、数据表格等，满足不同场景的转换需求。",
+            benefitsTitle: "为什么选择我们的服务？",
+            benefit1: "高精度转换，保持原始格式",
+            benefit2: "快速处理，节省时间",
+            benefit3: "安全可靠，保护隐私",
+            benefit4: "免费使用，无需注册",
+            ctaText: "转换后的 Markdown 文档完美适配 AI 阅读，让 AI 更好地理解您的文档内容",
+            ctaDetail: "无论是用于 ChatGPT、Claude 还是其他 AI 模型，转换后的 Markdown 文档都能提供最佳的阅读体验，帮助 AI 更准确地理解和处理您的文档内容。"
         }
     };
 
